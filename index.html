@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SILO SHOTOKAN SHOP</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/scrollreveal"></script>
+
+    <style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+body { background:#000; color:#fff; overflow-x:hidden; }
+
+header {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:20px 50px; position:fixed; width:100%;
+    background:rgba(0,0,0,0.6); backdrop-filter:blur(10px);
+    z-index:1000;
+}
+
+.logo { font-size:24px; font-weight:700; letter-spacing:3px; }
+nav a { margin:0 15px; text-decoration:none; color:#aaa; cursor:pointer; }
+nav a:hover { color:#fff; }
+
+.cart-icon { cursor:pointer; position:relative; }
+.cart-count {
+    position:absolute; top:-8px; right:-10px;
+    background:#ff0000; border-radius:50%; padding:3px 6px; font-size:12px;
+}
+
+.page { display:none; padding-top:100px; animation:fadeIn 0.5s ease; }
+.active { display:block; }
+
+/* HERO VIDEO */
+.hero {
+    position:relative;
+    height:100vh;
+    overflow:hidden;
+}
+
+.hero video {
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    object-fit:cover;
+}
+
+.hero-overlay {
+    position:absolute;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.5);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.hero h1 {
+    font-size:80px;
+    font-weight:700;
+    letter-spacing:3px;
+}
+
+.hero p {
+    margin-top:10px;
+    font-size:18px;
+    color:#ddd;
+}
+
+.btn {
+    margin-top:25px;
+    padding:15px 40px;
+    border:none;
+    background:#fff;
+    color:#000;
+    cursor:pointer;
+    font-weight:500;
+    transition:0.3s;
+}
+
+.btn:hover { transform:scale(1.08); }
+
+.section { padding:100px 50px; }
+
+.products {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:40px;
+}
+
+.card {
+    position:relative;
+    overflow:hidden;
+    cursor:pointer;
+}
+
+.card img {
+    width:100%;
+    transition:0.7s;
+}
+
+.card:hover img {
+    transform:scale(1.2);
+}
+
+.card-content {
+    position:absolute;
+    bottom:0;
+    width:100%;
+    padding:20px;
+    background:linear-gradient(transparent, black);
+}
+
+.product-view {
+    display:flex;
+    gap:60px;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.product-view img {
+    width:450px;
+    border-radius:10px;
+}
+
+.size-select button {
+    margin:5px;
+    padding:10px 15px;
+    border:1px solid #fff;
+    background:none;
+    color:#fff;
+    cursor:pointer;
+}
+
+.size-select button.active {
+    background:#fff;
+    color:#000;
+}
+
+.cart-panel {
+    position:fixed;
+    right:-400px;
+    top:0;
+    width:350px;
+    height:100%;
+    background:#111;
+    padding:20px;
+    transition:0.4s;
+    overflow-y:auto;
+    z-index:2000;
+}
+
+.cart-panel.active { right:0; }
+
+.checkout input {
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+}
+
+/* CAMPAIGN SECTION */
+.campaign {
+    height:60vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background:url('https://images.unsplash.com/photo-1546519638-68e109498ffc') center/cover;
+}
+
+.campaign h2 {
+    font-size:50px;
+    letter-spacing:2px;
+}
+
+@keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">SILO SHOTOKAN SHOP</div>
+    <nav>
+        <a onclick="showPage('home')">Home</a>
+        <a onclick="showPage('shop')">Shop</a>
+        <span class="cart-icon" onclick="toggleCart()">🛒 <span class="cart-count" id="cartCount">0</span></span>
+    </nav>
+</header>
+
+<div class="cart-panel" id="cartPanel">
+    <h2>Your Cart</h2>
+    <div id="cartItems"></div>
+    <h3 id="cartTotal">Total: R0</h3>
+
+    <div class="checkout">
+        <h3>Checkout</h3>
+        <input placeholder="Full Name">
+        <input placeholder="Phone Number">
+        <input placeholder="Address">
+        <button class="btn" onclick="checkout()">Place Order</button>
+    </div>
+</div>
+
+<!-- HOME -->
+<div id="home" class="page active">
+    <section class="hero">
+        <video autoplay muted loop>
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay">
+            <div>
+                <h1>JUST MOVE.</h1>
+                <p>No Limits. No Excuses.</p>
+                <button class="btn" onclick="showPage('shop')">Shop Now</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="campaign">
+        <h2>Unleash Your Power</h2>
+    </section>
+</div>
+
+<!-- SHOP -->
+<div id="shop" class="page">
+    <section class="section">
+        <h2>Shop Products</h2>
+        <div class="products" id="products"></div>
+    </section>
+</div>
+
+<!-- PRODUCT PAGE -->
+<div id="productPage" class="page">
+    <section class="section product-view" id="productView"></section>
+</div>
+
+<script>
+let storedProducts = JSON.parse(localStorage.getItem('products'));
+
+let products = storedProducts || [
+    {name:"Adidas Heavy Weight Gi WKF Approved K999", price:3588, img:"https://ipponsports.co.za/wp-content/uploads/2023/01/IMG-20230131-WA0063-1.jpg"},
+    {name:"Adidas KUMITE FIGHTER WHT/BLK WKF", price:1560, img:"https://ipponsports.co.za/wp-content/uploads/2025/11/K220-DNA1.jpg"},
+    {name:"Karate Uniform WUKF Pro Fighter", price:1620, img:"https://ipponsports.co.za/wp-content/uploads/2025/09/karate-uniform-wukf-pro-fighter.jpeg"},
+    {name:"Karate Suit Black", price:1050, img:"https://ipponsports.co.za/wp-content/uploads/2025/06/Black.jpg"},
+    {name:"SMAI Belts Color", price:120, img:"https://ipponsports.co.za/wp-content/uploads/2019/04/SMAIColor-2.jpg"},
+    {name:"SMAI Belts Color with Stripes", price:91, img:"https://ipponsports.co.za/wp-content/uploads/2019/04/SMAI-WHTSTRIPE-1.png"},
+    {name:"ADIDAS ELITE BELT WITH WKF LOGO", price:500, img:"https://ipponsports.co.za/wp-content/uploads/2021/07/AddidasRedBlueBelt.jpg"},
+    {name:"SMAI WKF Approved Belts", price:100, img:"https://ipponsports.co.za/wp-content/uploads/2023/04/SMAI-WKF-approved-Karate-Belts.jpg"},
+    {name:"Adidas Colour Belts", price:183, img:"https://ipponsports.co.za/wp-content/uploads/2021/07/Adidas-Colour.jpg"},
+    {name:"Female Chest Protector", price:877, img:"https://ipponsports.co.za/wp-content/uploads/2025/06/Female-Chest-Guard.jpg"},
+    {name:"Groin Guard Male", price:250, img:"https://ipponsports.co.za/wp-content/uploads/2025/06/Groin-protector.jpg"},
+    {name:"Female Chest Guard", price:630, img:"https://ipponsports.co.za/wp-content/uploads/2025/04/Female-Chest-Guard.jpg"},
+    {name:"Head Guard with Face Mask", price:850, img:"https://ipponsports.co.za/wp-content/uploads/2022/10/Headguard-Black.jpg"},
+    {name:"Karate Headguard with Mask – WKF-approved", price:1130, img:"https://ipponsports.co.za/wp-content/uploads/2022/08/WKF_Dipped_Headgear2.jpg"},
+    {name:"Karate Headguard with Mask – WUKF", price:1080, img:"https://ipponsports.co.za/wp-content/uploads/2025/09/0002618_head-guard-smai-wukf_600.jpeg"},
+    {name:"Heavy Weight Gi WKF Approved K300", price:2013, img:"https://ipponsports.co.za/wp-content/uploads/2023/01/IMG-20230131-WA0064.jpg"},
+    {name:"Adidas Karate Mitts without Thumbs", price:380, img:"https://ipponsports.co.za/wp-content/uploads/2022/03/Adidas-Mitts-No-Thumb.png"},
+    {name:"SMAI Competition Mitts WKF Approved", price:500, img:"https://ipponsports.co.za/wp-content/uploads/2020/08/smai-wkf-approved-mitts-without-thumb.jpg"},
+    {name:"Competition Mitts RING STAR", price:300, img:"https://ipponsports.co.za/wp-content/uploads/2020/08/RS-karate-mitts-1.jpg"},
+    {name:"Adidas Shins & Insteps", price:740, img:"https://ipponsports.co.za/wp-content/uploads/2025/11/Adidas-Shin_Insteps.png"},
+    {name:"WHITE KARATE SHIN & INSTEP GUARD", price:790, img:"https://ipponsports.co.za/wp-content/uploads/2023/03/SMAI-Shin-Insteps-White.jpg"},
+    {name:"SMAI External Body Protector WKF Approved", price:1200, img:"https://ipponsports.co.za/wp-content/uploads/2021/10/CP0-300x300.jpg"},
+    {name:"SMAI Inner Body Protector WKF Approved", price:860, img:"https://ipponsports.co.za/wp-content/uploads/2022/03/Inner-Chest-Protector.jpeg"},
+    {name:"Reversible Chest Guard", price:750, img:"https://ipponsports.co.za/wp-content/uploads/2020/08/TKD-chest-guard-SMID301-1_1000x-1.jpg"},
+    {name:"Training Nunchaku Foam with String", price:130, img:"https://ipponsports.co.za/wp-content/uploads/2020/11/Foam-Nunchacku-ninja-2.jpg"},
+    {name:"Nunchaku Foam with Chain", price:190, img:"https://ipponsports.co.za/wp-content/uploads/2020/10/FoamChain-1.jpg"},
+    {name:"Wooden Nunchacku", price:210, img:"https://ipponsports.co.za/wp-content/uploads/2021/04/Nunchacku-Traditional-Rounded.jpg"},
+    {name:"Wooden Tonfa", price:520, img:"https://ipponsports.co.za/wp-content/uploads/2023/04/Tonfas.jpg"},
+    {name:"Rattan Bo", price:480, img:"https://ipponsports.co.za/wp-content/uploads/2025/09/0000611_bo-rattan_600.jpeg"},
+    {name:"Hardwood Bo", price:560, img:"https://ipponsports.co.za/wp-content/uploads/2025/09/Bo-Staff-Red-wood.jpg"},
+    {name:"Jo Staff", price:560, img:"https://ipponsports.co.za/wp-content/uploads/2025/09/wooden-weapon-hardwood-jo-staff.webp"}
+];
+
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let selectedSize = "";
+
+function showPage(page){
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
+}
+
+function renderProducts(){
+    const container = document.getElementById('products');
+    container.innerHTML = '';
+    products.forEach((p,i)=>{
+        container.innerHTML += `
+        <div class="card" onclick="viewProduct(${i})">
+            <img src="${p.img}">
+            <div class="card-content">
+                <h3>${p.name}</h3>
+                <p>R${p.price}</p>
+            </div>
+        </div>`;
+    });
+}
+
+function viewProduct(i){
+    const p = products[i];
+    selectedSize = "";
+    document.getElementById('productView').innerHTML = `
+        <img src="${p.img}">
+        <div>
+            <h2>${p.name}</h2>
+            <p>R${p.price}</p>
+            <div class="size-select">
+                <p>Select Size:</p>
+                ${['S','M','L','XL'].map(size=>`<button onclick="selectSize(this,'${size}')">${size}</button>`).join('')}
+            </div>
+            <button class="btn" onclick="addToCart(${i})">Add to Cart</button>
+        </div>
+    `;
+    showPage('productPage');
+}
+
+function selectSize(btn, size){
+    document.querySelectorAll('.size-select button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSize = size;
+}
+
+function addToCart(i){
+    if(!selectedSize){ alert('Select size'); return; }
+    const product = {...products[i], size:selectedSize};
+    cart.push(product);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCart();
+    toggleCart();
+}
+
+function updateCart(){
+    const container = document.getElementById('cartItems');
+    container.innerHTML = '';
+    let total = 0;
+
+    cart.forEach((item,index)=>{
+        total += Number(item.price);
+        container.innerHTML += `
+        <p>${item.name} (${item.size}) - R${item.price} <button onclick="removeItem(${index})">X</button></p>`;
+    });
+
+    document.getElementById('cartTotal').innerText = 'Total: R' + total;
+    document.getElementById('cartCount').innerText = cart.length;
+}
+
+function removeItem(i){
+    cart.splice(i,1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCart();
+}
+
+function toggleCart(){
+    document.getElementById('cartPanel').classList.toggle('active');
+}
+
+function checkout(){
+    if(cart.length === 0){ alert('Cart is empty'); return; }
+
+    // Build PayFast form dynamically
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://sandbox.payfast.co.za/eng/process'; // change to live later
+
+    const total = cart.reduce((sum, item) => sum + Number(item.price), 0);
+
+    const fields = {
+        merchant_id: '10000100', // replace with your PayFast merchant ID
+        merchant_key: '46f0cd694581a', // replace with your merchant key
+        amount: total,
+        item_name: 'Nova Elite Order'
+    };
+
+    for(let key in fields){
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = fields[key];
+        form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+ScrollReveal().reveal('.card', { delay:200, distance:'50px', origin:'bottom', interval:100 });
+ScrollReveal().reveal('.campaign h2', { delay:200, scale:0.9 });
+
+renderProducts();
+updateCart();
+</script>
+
+</body>
+</html>
